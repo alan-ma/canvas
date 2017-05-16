@@ -33,6 +33,11 @@
 	var num_snow = 200;
 	var dots = [];
 	var snow = [];
+	var groundSnow = [];
+
+	for (i=0; i<Math.floor(canvas.width); i++) {
+		groundSnow.push(0);
+	}
 
 	for (i=0; i<num_dots; i++) {
 		dots.push({x: 0, y: 0});
@@ -40,11 +45,17 @@
 
 	for (i=0; i<num_snow; i++) {
 		snow.push({x: 0, y:0, speed: 0, size: 0});
-		resetSnow(snow[i]);
+		snow[i].x = Math.random()*canvas.width;
 		snow[i].y = Math.random()*canvas.height;
+		snow[i].speed = Math.random()*5+1;
+		snow[i].size = Math.random()*2+1;
 	}
 
 	function resetSnow(snowflake) {
+		for (j=Math.floor(snowflake.x-snowflake.size/2); j<Math.floor(snowflake.x+snowflake.size/2); j++) {
+			groundSnow[j] += snowflake.size;
+			console.log("snow");
+		}
 		snowflake.x = Math.random()*canvas.width;
 		snowflake.y = 0;
 		snowflake.speed = Math.random()*5+1;
@@ -84,6 +95,7 @@
 		for (i=0; i<num_dots; i++) {
 			ctx.beginPath();
 			ctx.arc(dots[i].x, dots[i].y, 20, 0, 2*Math.PI, true);
+			// ctx.fillRect(dots[i].x-20, dots[i].y-20, 40, 40);
 			ctx.fillStyle = "rgba(255, 255, 255, " + (1-(1/num_dots)*i).toString() + ")";
 			ctx.fill();
 		}
@@ -92,6 +104,11 @@
 			ctx.fillStyle = "white";
 			ctx.arc(snow[i].x, snow[i].y, snow[i].size, 0, 2*Math.PI, true);
 			ctx.fill();
+		}
+		for (i=0; i<groundSnow.length; i++) {
+			ctx.beginPath();
+			ctx.fillStyle = "white";
+			ctx.fillRect(i, canvas.height-groundSnow[i], 1, groundSnow[i]);
 		}
 	}, 0);
 
