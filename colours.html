@@ -1,0 +1,77 @@
+
+<style>
+	body {
+		margin: 0;
+		width: 100%;
+		height: 100%;
+	}
+	#new_canvas {
+		z-index: 3;
+		position: relative;
+		width: 100%;
+		height: 100%;
+	}
+</style>
+
+<canvas id="new_canvas" width="1080px" height="720px"></canvas>
+
+<script>
+	var canvas = document.getElementById("new_canvas");
+	var ctx = canvas.getContext("2d");
+	ctx.canvas.width  = window.innerWidth;
+	ctx.canvas.height = window.innerHeight;
+	var mousePos;
+	var oldPos = {x:0,y:0};
+	var increment = 0;
+	var colour = "rgb(0,0,0)";
+
+	function new_colour() {
+		var red = getRandomInt(0,255);
+		var blue = getRandomInt(0,255);
+		var green = getRandomInt(0,255);
+		colour = "rgb("+red.toString()+","+green.toString()+","+blue.toString()+")";
+	}
+
+	function getRandomInt(min, max) {
+		min = Math.ceil(min);
+		max = Math.floor(max);
+		return Math.floor(Math.random() * (max - min)) + min;
+	}
+
+	function getMousePos(canvas, evt) {
+		var rect = canvas.getBoundingClientRect();
+		return {
+			x: (evt.clientX-rect.left)/(rect.right-rect.left)*canvas.width,
+			y: (evt.clientY-rect.top)/(rect.bottom-rect.top)*canvas.height
+		};
+	}
+
+	canvas.addEventListener('mousemove', function(evt) {
+		mousePos = getMousePos(canvas, evt);
+	}, false);
+
+	setInterval(function() {
+		ctx.beginPath();
+		if (mousePos == oldPos) {
+			increment += 0.7;
+			ctx.arc(mousePos.x, mousePos.y, increment, 0, 2*Math.PI, true);
+			ctx.stroke()
+		} else {
+			if (increment > 200) {
+				increment = 200;
+			} else if (increment >= 4) {
+				increment -= 1;
+			} else {
+				increment = 3;
+			}
+			ctx.arc(mousePos.x, mousePos.y, increment, 0, 2*Math.PI, true);
+			ctx.fill()
+		}
+		new_colour();
+		ctx.fillStyle = colour;
+		ctx.strokeStyle = colour;
+		oldPos = mousePos;
+	}, 0);
+
+</script>
+
