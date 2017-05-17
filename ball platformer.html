@@ -25,15 +25,17 @@
 	ball.x = canvas.width/2;
 	ball.y = 0;
 	ball.gravity = 0.98;
-	ball.friction = 0.2;
+	ball.friction = 0.25;
 	ball.jump = 15;
-	ball.move = 0.3;
+	ball.move = 0.4;
 	ball.velocityY = 0;
 	ball.velocityX = 0;
 	ball.canJump = true;
 	ball.wantJump = false;
 	ball.radius = 20;
-	var movement = 0;
+	ball.wantLeft = false;
+	ball.wantRight = false;
+	ball.movement = 0;
 	var limiter = false;
 	var groundHeight = 100 + ball.radius;	
 
@@ -44,22 +46,24 @@
 			}
 		}
 		if (event.code == "KeyD" || event.code == "ArrowRight") {
-			movement = 1;
+			ball.movement = 1;
+			ball.wantRight = true;
 		}
 		if (event.code == "KeyA" || event.code == "ArrowLeft") {
-			movement = -1;
+			ball.movement = -1;
+			ball.wantLeft = true;
 		}
 	}, false);
 
 	document.addEventListener('keyup', function(event) {
 		if (event.code == "KeyD" || event.code == "ArrowRight") {
-			movement = 0;
+			ball.wantRight = false;
 		}
 		if (event.code == "KeyA" || event.code == "ArrowLeft") {
-			movement = 0;
+			ball.wantLeft = false;
 		}
 		if (event.code == "KeyW" || event.code == "ArrowUp") {
-			ball.wantJump = 0;
+			ball.wantJump = false;
 		}
 	}, false);
 
@@ -88,7 +92,16 @@
 			ball.canJump = true;
 		}
 
-		ball.velocityX += movement * ball.move;
+		if (ball.wantRight && !ball.wantLeft) {
+			ball.movement = 1;
+		}
+		if (!ball.wantRight && ball.wantLeft) {
+			ball.movement = -1;
+		}
+		if (!ball.wantLeft && !ball.wantRight) {
+			ball.movement = 0;
+		}
+		ball.velocityX += ball.movement * ball.move;
 
 		if (ball.velocityX > 0) {
 			if (ball.velocityX - ball.friction >= 0) {
