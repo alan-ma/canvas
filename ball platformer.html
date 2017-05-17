@@ -1,0 +1,128 @@
+
+<style>
+	body {
+		margin: 0;
+		width: 100%;
+		height: 100%;
+	}
+	#new_canvas {
+		z-index: 3;
+		position: relative;
+		width: 100%;
+		height: 100%;
+	}
+</style>
+
+<canvas id="new_canvas" width="1080px" height="720px"></canvas>
+
+<script>
+	var canvas = document.getElementById("new_canvas");
+	var ctx = canvas.getContext("2d");
+	ctx.canvas.width  = window.innerWidth;
+	ctx.canvas.height = window.innerHeight;
+
+	var ball = {};
+	ball.x = canvas.width/2;
+	ball.y = 0;
+	ball.gravity = 0.98;
+	ball.friction = 0.2;
+	ball.jump = 15;
+	ball.move = 0.3;
+	ball.velocityY = 0;
+	ball.velocityX = 0;
+	ball.canJump = true;
+	ball.wantJump = false;
+	ball.radius = 20;
+	var movement = 0;
+	var limiter = false;
+	var groundHeight = 100 + ball.radius;	
+
+	document.addEventListener('keydown', function(event) {
+		if (event.code == "KeyW" || event.code == "ArrowUp") {
+			if (ball.canJump) {
+				ball.wantJump = true;
+			}
+		}
+		if (event.code == "KeyD" || event.code == "ArrowRight") {
+			movement = 1;
+		}
+		if (event.code == "KeyA" || event.code == "ArrowLeft") {
+			movement = -1;
+		}
+	}, false);
+
+	document.addEventListener('keyup', function(event) {
+		if (event.code == "KeyD" || event.code == "ArrowRight") {
+			movement = 0;
+		}
+		if (event.code == "KeyA" || event.code == "ArrowLeft") {
+			movement = 0;
+		}
+		if (event.code == "KeyW" || event.code == "ArrowUp") {
+			ball.wantJump = 0;
+		}
+	}, false);
+
+	setInterval(function() {
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		ctx.fillRect(0, canvas.height - groundHeight + ball.radius, canvas.width, groundHeight);
+
+		if (ball.wantJump && ball.canJump) {
+			ball.velocityY = ball.jump;
+		}
+
+		if (!limiter) {
+			ball.velocityY -= ball.gravity;
+
+			if (ball.y + ball.velocityY >= 0) {
+				ball.y += ball.velocityY;
+			} else {
+				ball.y = 0;
+				ball.velocityY = 0;
+			}
+		}
+
+		if (ball.y > 0) {
+			ball.canJump = false;
+		} else {
+			ball.canJump = true;
+		}
+
+		ball.velocityX += movement * ball.move;
+
+		if (ball.velocityX > 0) {
+			if (ball.velocityX - ball.friction >= 0) {
+				ball.velocityX -= ball.friction;
+			} else {
+				ball.velocityX = 0;
+			}
+		} else {
+			if (ball.velocityX + ball.friction <= 0) {
+				ball.velocityX += ball.friction;
+			} else {
+				ball.velocityX = 0;
+			}
+		}
+
+		ball.x += ball.velocityX;
+
+		if (ball.x < ball.radius) {
+			ball.x = canvas.width - ball.x;
+		} else if (ball.x > canvas.width - ball.radius) {
+			ball.x -= canvas.width;
+		}
+
+		ctx.beginPath();
+		ctx.arc(ball.x, canvas.height - groundHeight - ball.y, ball.radius, 0, 2*Math.PI, true);
+		ctx.fill();
+
+		limiter = !limiter;
+
+		ctx.beginPath();
+		ctx.fillRect(canvas.width/2, 100, ball.velocityX*10, 20);
+		ctx.fillRect(canvas.width/2, 300, 20, -ball.velocityY*10);
+
+	}, 0);
+
+</script>
+
