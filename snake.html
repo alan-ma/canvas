@@ -1,0 +1,89 @@
+<!-- code based on Chris DeLeon's video tutorial https://www.youtube.com/watch?v=xGmXxpIj6vs -->
+<canvas id="canvas" height="400" width="400"></canvas>
+<script>
+	window.onload=function() {
+		canvas = document.getElementById("canvas");
+		ctx = canvas.getContext("2d");
+		document.addEventListener("keydown", keyPush);
+		setInterval(game, 1000/15);
+	}
+
+	player_x = player_y = 0;
+	velocity_x = velocity_y = 0;
+	tile_count = grid_size = 20;
+	apple_x = Math.floor(Math.random() * tile_count);
+	apple_y = Math.floor(Math.random() * tile_count);
+	trail = [];
+	tail = 5;
+
+	function game() {
+		player_x += velocity_x;
+		player_y += velocity_y;
+		if (player_x < 0) {
+			player_x = tile_count - 1;
+		}
+		if (player_x > tile_count - 1) {
+			player_x = 0;
+		}
+		if (player_y < 0) {
+			player_y = tile_count - 1;
+		}
+		if (player_y > tile_count - 1) {
+			player_y = 0;
+		}
+
+		ctx.fillStyle = "black";
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+		ctx.fillStyle = "lime";
+		for (var i=0; i<trail.length; i++) {
+			ctx.fillRect(trail[i].x * grid_size, trail[i].y * grid_size, grid_size - 2, grid_size - 2);
+			if (trail[i].x == player_x && trail[i].y == player_y) {
+				tail = 5;
+			}
+		}
+
+		trail.push({x: player_x, y: player_y});
+
+		while (trail.length > tail) {
+			trail.shift();
+		}
+
+		if (apple_x == player_x && apple_y == player_y) {
+			tail ++;
+			apple_x = Math.floor(Math.random() * tile_count);
+			apple_y = Math.floor(Math.random() * tile_count);
+		}
+
+		ctx.fillStyle = "red";
+		ctx.fillRect(apple_x * grid_size, apple_y * grid_size, grid_size - 2, grid_size - 2);
+	}
+	function keyPush(event) {
+		switch(event.keyCode) {
+			case 37:
+				if (velocity_x != 1) {
+					velocity_x = -1;
+					velocity_y = 0;
+				}
+				break;
+			case 38:
+				if (velocity_y != 1) {
+					velocity_x = 0;
+					velocity_y = -1;
+				}
+				break;
+			case 39:
+				if (velocity_x != -1) {
+					velocity_x = 1;
+					velocity_y = 0;
+				}
+				break;
+			case 40:
+				if (velocity_y != -1) {
+					velocity_x = 0;
+					velocity_y = 1;
+				}
+				break;
+		}
+	}
+</script>
