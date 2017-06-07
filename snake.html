@@ -1,3 +1,11 @@
+<style>
+	html, body {
+		margin: 0;
+		text-align: center;
+		font-family: sans-serif;
+	}
+</style>
+
 <!-- code based on Chris DeLeon's video tutorial https://www.youtube.com/watch?v=xGmXxpIj6vs -->
 <canvas id="canvas" height="400" width="400"></canvas>
 <br>
@@ -6,19 +14,30 @@
 	window.onload=function() {
 		canvas = document.getElementById("canvas");
 		ctx = canvas.getContext("2d");
+		ctx.canvas.width  = window.innerHeight*0.85;
+		ctx.canvas.height = window.innerHeight*0.85;
 		document.addEventListener("keydown", keyPush);
 		setInterval(game, 1000/15);
 	}
 
 	player_x = player_y = 0;
 	velocity_x = velocity_y = 0;
-	tile_count = grid_size = 20;
+	tile_count = 20;
+	grid_size = 20;
 	apple_x = Math.floor(Math.random() * tile_count);
 	apple_y = Math.floor(Math.random() * tile_count);
 	trail = [];
 	tail = 5;
+	controls = [];
 
 	function game() {
+		ctx.canvas.width  = window.innerHeight*0.8;
+		ctx.canvas.height = window.innerHeight*0.8;
+		grid_size = ctx.canvas.height/tile_count;
+
+		do_control(controls[0]);
+		controls.shift();
+
 		player_x += velocity_x;
 		player_y += velocity_y;
 		if (player_x < 0) {
@@ -38,7 +57,7 @@
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 		ctx.fillStyle = "lime";
-		for (var i=0; i<trail.length; i++) {
+		for (i=0; i<trail.length; i++) {
 			ctx.fillRect(trail[i].x * grid_size, trail[i].y * grid_size, grid_size - 2, grid_size - 2);
 			if (trail[i].x == player_x && trail[i].y == player_y) {
 				tail = 5;
@@ -63,24 +82,44 @@
 	function keyPush(event) {
 		switch(event.keyCode) {
 			case 37:
+			case 65:
+				controls.push('l');
+				break;
+			case 38:
+			case 87:
+				controls.push('u');
+				break;
+			case 39:
+			case 68:
+				controls.push('r');
+				break;
+			case 40:
+			case 83:
+				controls.push('d');
+				break;
+		}
+	}
+	function do_control(key) {
+		switch(key) {
+			case 'l':
 				if (velocity_x != 1) {
 					velocity_x = -1;
 					velocity_y = 0;
 				}
 				break;
-			case 38:
+			case 'u':
 				if (velocity_y != 1) {
 					velocity_x = 0;
 					velocity_y = -1;
 				}
 				break;
-			case 39:
+			case 'r':
 				if (velocity_x != -1) {
 					velocity_x = 1;
 					velocity_y = 0;
 				}
 				break;
-			case 40:
+			case 'd':
 				if (velocity_y != -1) {
 					velocity_x = 0;
 					velocity_y = 1;
