@@ -13,7 +13,7 @@ Fourth project: <a href="https://alan-ma.github.io/lomansearch" target="_blank">
 Created for my English class. Move around trying to find your goals in the pitch dark world.<br>
 <br>
 Fifth project: <a href="https://alan-ma.github.io/canvas/snake" target="_blank">snake</a><br>
-I saw Chris DeLeon's video <a href="https://www.youtube.com/watch?v=xGmXxpIj6vs" target="_blank">here</a> and thought that it was brilliant. I essentially copied/rewrote all of the code to get more familiar with it.<br>
+I saw Chris DeLeon's video <a href="https://www.youtube.com/watch?v=xGmXxpIj6vs" target="_blank">here</a> and thought that it was brilliant. I essentially copied/rewrote all of the code to get more familiar with it, and added in a few features of my own.<br>
 <br>
 Sixth project: <a href="https://alan-ma.github.io/canvas/floating_objects" target="_blank">floating objects</a><br>
 The background of the site I was creating for <a href="http://fusesociety.com/casecompetition" target="_blank">FUSE Society's Case Competition page</a> needed something a bit more interesting, so I created this.<br>
