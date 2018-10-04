@@ -16,40 +16,39 @@
   ctx.canvas.height = window.innerHeight;
 
   class Follower {
-    constructor(x, y, r, distance) {
+    constructor(x, y, r, colour) {
       this.x = x;
       this.y = y;
       this.r = r;
-      this.distance = distance;
+      this.colour = colour;
     }
 
-    update(mouseX, mouseY) {
-      this.x += (mouseX - this.x) / this.distance;
-      this.y += (mouseY - this.y) / this.distance;
-
-      console.log()
+    update(mouseX, mouseY, distanceDelay) {
+      this.x += (mouseX - this.x) / distanceDelay;
+      this.y += (mouseY - this.y) / distanceDelay;
 
       ctx.beginPath();
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+      ctx.fillStyle = 'rgba(' + this.colour + ', 0.95)';
       ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI);
       ctx.fill();
     }
   };
 
   class Splash {
-    constructor(x, y, r, life) {
+    constructor(x, y, r, life, colour) {
       this.x = x;
       this.y = y;
       this.life = life;
       this.origLife = life;
       this.r = r;
+      this.colour = colour; // 0, 0, 0 or 255, 255, 255
     }
 
     update() {
       if (this.life > 0) {
         this.r += 1.5;
         ctx.beginPath();
-        ctx.fillStyle = 'rgba(0, 0, 0, ' + (0.5 * this.life / this.origLife) + ')';
+        ctx.fillStyle = 'rgba(' + this.colour + ', ' + (0.5 * this.life / this.origLife) + ')';
         ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI);
         ctx.fill();
         this.life--;
@@ -58,8 +57,11 @@
   }
 
   var mousePos = {x: ctx.canvas.width / 2, y: ctx.canvas.height / 2};
+  var distanceDelay = 50;
 
-  var follower = new Follower(ctx.canvas.width / 2, ctx.canvas.height / 2, 20, 50);
+  var follower = new Follower(ctx.canvas.width / 2 - 100, ctx.canvas.height / 2, 20, '0, 0, 0');
+  var mirrored = new Follower(ctx.canvas.width / 2 + 100, ctx.canvas.height / 2, 20, '255, 255, 255');
+
   var splashes = [];
   var numSplashes = 0;
 
@@ -71,23 +73,37 @@
     };
   }
 
+  function addSplashes() {
+    splashes.push(new Splash(follower.x, follower.y, follower.r, 50, '0, 0, 0'));
+    splashes.push(new Splash(mirrored.x, mirrored.y, mirrored.r, 50, '255, 255, 255'));
+  }
+
   canvas.addEventListener('mousemove', function (evt) {
     mousePos = getMousePos(canvas, evt);
   }, false);
 
-  document.addEventListener('keyup', function (event) {
-    splashes.push(new Splash(follower.x, follower.y, follower.r, 50));
+  document.addEventListener('keydown', function (event) {
+    addSplashes();
+
+    if (event.keyCode === 32) {
+      distanceDelay += 25;
+
+      if (distanceDelay > 100) {
+        distanceDelay = 1;
+      }
+    }
   }, false);
 
   document.addEventListener('mousedown', function (event) {
-    splashes.push(new Splash(follower.x, follower.y, follower.r, 50));
+    addSplashes();
   }, false);
 
   setInterval(function () {
-    ctx.fillStyle = '#03A9F4';
+    ctx.fillStyle = '#0288D1';
     ctx.rect(0, 0, canvas.width, canvas.height);
     ctx.fill();
-    follower.update(mousePos.x, mousePos.y);
+    follower.update(mousePos.x, mousePos.y, distanceDelay);
+    mirrored.update(canvas.width - mousePos.x, mousePos.y, distanceDelay);
 
     var counter = 0;
     while (counter < splashes.length) {
