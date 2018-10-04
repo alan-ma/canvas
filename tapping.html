@@ -1,0 +1,103 @@
+<style>
+  html,
+  body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+  }
+</style>
+
+<canvas id="canvas" width="1080px" height="720px"></canvas>
+
+<script>
+  var canvas = document.getElementById("canvas");
+  var ctx = canvas.getContext("2d");
+  ctx.canvas.width = window.innerWidth;
+  ctx.canvas.height = window.innerHeight;
+
+  class Follower {
+    constructor(x, y, r, distance) {
+      this.x = x;
+      this.y = y;
+      this.r = r;
+      this.distance = distance;
+    }
+
+    update(mouseX, mouseY) {
+      this.x += (mouseX - this.x) / this.distance;
+      this.y += (mouseY - this.y) / this.distance;
+
+      console.log()
+
+      ctx.beginPath();
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+      ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI);
+      ctx.fill();
+    }
+  };
+
+  class Splash {
+    constructor(x, y, r, life) {
+      this.x = x;
+      this.y = y;
+      this.life = life;
+      this.origLife = life;
+      this.r = r;
+    }
+
+    update() {
+      if (this.life > 0) {
+        this.r += 1.5;
+        ctx.beginPath();
+        ctx.fillStyle = 'rgba(0, 0, 0, ' + (0.5 * this.life / this.origLife) + ')';
+        ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI);
+        ctx.fill();
+        this.life--;
+      }
+    }
+  }
+
+  var mousePos = {x: ctx.canvas.width / 2, y: ctx.canvas.height / 2};
+
+  var follower = new Follower(ctx.canvas.width / 2, ctx.canvas.height / 2, 20, 50);
+  var splashes = [];
+  var numSplashes = 0;
+
+  function getMousePos(canvas, evt) {
+    var rect = canvas.getBoundingClientRect();
+    return {
+      x: (evt.clientX - rect.left) / (rect.right - rect.left) * canvas.width,
+      y: (evt.clientY - rect.top) / (rect.bottom - rect.top) * canvas.height
+    };
+  }
+
+  canvas.addEventListener('mousemove', function (evt) {
+    mousePos = getMousePos(canvas, evt);
+  }, false);
+
+  document.addEventListener('keyup', function (event) {
+    splashes.push(new Splash(follower.x, follower.y, follower.r, 50));
+  }, false);
+
+  document.addEventListener('mousedown', function (event) {
+    splashes.push(new Splash(follower.x, follower.y, follower.r, 50));
+  }, false);
+
+  setInterval(function () {
+    ctx.fillStyle = '#03A9F4';
+    ctx.rect(0, 0, canvas.width, canvas.height);
+    ctx.fill();
+    follower.update(mousePos.x, mousePos.y);
+
+    var counter = 0;
+    while (counter < splashes.length) {
+      if (splashes[counter].life > 0) {
+        splashes[counter].update();
+        counter++;
+      } else {
+        splashes.splice(counter, 1);
+      }
+    }
+  });
+
+</script>

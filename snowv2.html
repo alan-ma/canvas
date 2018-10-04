@@ -22,7 +22,6 @@
 </style>
 <img src="images/snowglobe.jpg" alt="">
 <canvas id="new_canvas" width="1080px" height="720px"></canvas>
-<canvas id="blah" width="1080px" height="720px"></canvas>
 
 <script>
 	var canvas = document.getElementById("new_canvas");
@@ -48,7 +47,7 @@
 		snow.push({x: 0, y:0, speed: 0, size: 0});
 		snow[i].x = Math.random()*canvas.width;
 		snow[i].y = Math.random()*canvas.height;
-		snow[i].speed = Math.abs(Math.random()-0.5)*0.5;
+		snow[i].speed = Math.random()*5+1;
 		snow[i].size = Math.random()*2+1;
 	}
 
@@ -58,7 +57,7 @@
 		}
 		snowflake.x = Math.random()*canvas.width;
 		snowflake.y = 0;
-		snowflake.speed = Math.abs(Math.random()-0.5)*0.5;
+		snowflake.speed = Math.random()*5+1;
 		snowflake.size = Math.random()*2+1;
 	}
 
@@ -79,7 +78,6 @@
 		}
 		for (i=0; i<num_snow; i++) {
 			snow[i].y += snow[i].speed;
-			snow[i].x += snow[i].speed*0.3;
 			if (snow[i].y > canvas.height) {
 				resetSnow(snow[i]);
 			}
