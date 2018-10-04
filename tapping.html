@@ -109,6 +109,12 @@
     ctx.fillStyle = '#0288D1';
     ctx.rect(0, 0, canvas.width, canvas.height);
     ctx.fill();
+
+    ctx.beginPath();
+    ctx.fillStyle = '#000';
+    ctx.arc(mousePos.x, mousePos.y, 2, 0, 2 * Math.PI);
+    ctx.fill();
+    
     follower.update(mousePos.x, mousePos.y, distanceDelay);
     mirrored.update(canvas.width - mousePos.x, mousePos.y, distanceDelay);
 
