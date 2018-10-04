@@ -17,5 +17,8 @@ I saw Chris DeLeon's video <a href="https://www.youtube.com/watch?v=xGmXxpIj6vs"
 <br>
 Sixth project: <a href="https://alan-ma.github.io/canvas/floating_objects" target="_blank">floating objects</a><br>
 The background of the site I was creating for <a href="http://fusesociety.com/casecompetition" target="_blank">FUSE Society's Case Competition page</a> needed something a bit more interesting, so I created this.<br>
+<br>
+Seventh project: <a href="https://alan-ma.github.io/canvas/tapping" target="_blank">tapping fun!</a><br>
+I was bored and wanted something to look at while randomly typing away at keys.<br>
 
-Seventh project: undecided
+Eighth project: undecided
