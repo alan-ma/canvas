@@ -16,58 +16,45 @@
   ctx.canvas.width = window.innerWidth;
   ctx.canvas.height = window.innerHeight;
 
-  class Splash {
+  class Button {
     constructor(side, colour) {
       this.side = side;
       this.colour = colour; // 0, 0, 0 or 255, 255, 255
-      this.display = false;
-      this.cleared = true;
-      this.filled = false;
+      this.shown = false;
     }
 
-    update() {
-      if (this.display) {
-      	if (!this.filled) {
-      		ctx.fillStyle = 'rgba(' + this.colour + ', ' + (0.08) + ')';
-	        ctx.fillRect(this.side * ctx.canvas.width / 2, 0, ctx.canvas.width / 2, ctx.canvas.height);
-	        ctx.fill();
-	        this.filled = true;
-      	}
-      } else {
-      	if (!this.cleared) {
-      		ctx.fillStyle = '#0288D1';
-      		ctx.fillRect(this.side * ctx.canvas.width / 2, 0, ctx.canvas.width / 2, ctx.canvas.height);
-      		this.cleared = true;
-      	}
+    show() {
+      if (!this.shown) {
+        ctx.fillStyle = 'rgba(' + this.colour + ', ' + (0.08) + ')';
+        ctx.fillRect(this.side * ctx.canvas.width / 2, 0, ctx.canvas.width / 2, ctx.canvas.height);
+        this.shown = true;
       }
+    }
+
+    hide() {
+      ctx.fillStyle = '#0288D1';
+      ctx.fillRect(this.side * ctx.canvas.width / 2, 0, ctx.canvas.width / 2, ctx.canvas.height);
+      this.shown = false;
     }
   }
 
-  var splashes = [];
-  splashes.push(new Splash(0, '0, 0, 0'));
-  splashes.push(new Splash(1, '0, 0, 0'));
+  var buttons = [];
+  buttons.push(new Button(0, '0, 0, 0'));
+  buttons.push(new Button(1, '0, 0, 0'));
 
   document.addEventListener('keydown', function (event) {
     if (event.code == "KeyZ") {
-			splashes[0].display = true;
-			splashes[0].filled = false;
-			splashes[0].update();
+			buttons[0].show();
 		} else if (event.code == "KeyX") {
-			splashes[1].display = true;
-			splashes[1].filled = false;
-			splashes[1].update();
+			buttons[1].show();
 		}
   }, false);
 
   document.addEventListener('keyup', function (event) {
     if (event.code == "KeyZ") {
-			splashes[0].display = false;
-      splashes[0].cleared = false;
-      splashes[0].update();
+			buttons[0].hide();
 		} else if (event.code == "KeyX") {
-			splashes[1].display = false;
-      splashes[1].cleared = false;
-      splashes[1].update();
+			buttons[1].hide();
 		}
   }, false);
 
