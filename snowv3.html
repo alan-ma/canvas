@@ -1,0 +1,124 @@
+
+<style>
+	body {
+		margin: 0;
+		width: 100%;
+		height: 100%;
+	}
+	#new_canvas {
+		z-index: 3;
+		position: relative;
+		width: 100%;
+		height: 100%;
+	}
+	img {
+		object-fit: cover;
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		z-index: 0;
+		filter: saturate(1.5);
+	}
+</style>
+<img src="images/snowglobe.jpg" alt="">
+<canvas id="new_canvas" width="1080px" height="720px"></canvas>
+
+<script>
+	var canvas = document.getElementById("new_canvas");
+	var ctx = canvas.getContext("2d");
+	ctx.canvas.width  = window.innerWidth;
+	ctx.canvas.height = window.innerHeight;
+	var mousePos;
+	var num_dots = 10;
+	var num_snow = 200;
+	var dots = [];
+	var snow = [];
+	var groundSnow = [];
+
+	for (i=0; i<Math.floor(canvas.width); i++) {
+		groundSnow.push(0);
+	}
+
+	for (i=0; i<num_dots; i++) {
+		dots.push({x: 0, y: 0});
+	}
+
+	for (i=0; i<num_snow; i++) {
+		snow.push({x: 0, y:0, speed: 0, size: 0});
+		snow[i].x = Math.random()*canvas.width;
+		snow[i].y = Math.random()*canvas.height;
+		snow[i].speed = Math.abs(Math.random()-0.5)*5;
+		snow[i].size = Math.random()*2+1;
+	}
+
+	function resetSnow(snowflake) {
+		for (j=Math.floor(snowflake.x-snowflake.size); j<Math.floor(snowflake.x+snowflake.size); j++) {
+			groundSnow[j] += snowflake.size;
+		}
+		snowflake.x = Math.random()*canvas.width;
+		snowflake.y = 0;
+		snowflake.speed = Math.abs(Math.random()-0.5)*5;
+		snowflake.size = Math.random()*2+1;
+	}
+
+	function getMousePos(canvas, evt) {
+		var rect = canvas.getBoundingClientRect();
+		return {
+			x: (evt.clientX-rect.left)/(rect.right-rect.left)*canvas.width,
+			y: (evt.clientY-rect.top)/(rect.bottom-rect.top)*canvas.height
+		};
+	}
+
+	function updatePosition() {
+		dots[0].x += (mousePos.x - dots[0].x)/15;
+		dots[0].y += (mousePos.y - dots[0].y)/15;
+		for (i=1; i<num_dots; i++) {
+			dots[i].x += (dots[i-1].x - dots[i].x)/5;
+			dots[i].y += (dots[i-1].y - dots[i].y)/5;
+		}
+		for (i=0; i<num_snow; i++) {
+			snow[i].y += snow[i].speed;
+			snow[i].x += snow[i].speed * (mousePos.x - canvas.width / 2) / canvas.width;
+			if (snow[i].y > canvas.height) {
+				resetSnow(snow[i]);
+			}
+			if (snow[i].x > canvas.width) {
+				snow[i].x = 0;
+			}
+			if (snow[i].x < 0) {
+				snow[i].x = canvas.width;
+			}
+		}
+	}
+
+	canvas.addEventListener('mousemove', function(evt) {
+		mousePos = getMousePos(canvas, evt);
+	}, false);
+
+	window.onload = function() {
+		setInterval(function() {
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			updatePosition();
+			for (i=0; i<num_dots; i++) {
+				ctx.beginPath();
+				ctx.arc(dots[i].x, dots[i].y, 20, 0, 2*Math.PI, true);
+				// ctx.fillRect(dots[i].x-20, dots[i].y-20, 40, 40);
+				ctx.fillStyle = "rgba(255, 255, 255, " + (1-(1/num_dots)*i).toString() + ")";
+				ctx.fill();
+			}
+			for (i=0; i<num_snow; i++) {
+				ctx.beginPath();
+				ctx.fillStyle = "white";
+				ctx.arc(snow[i].x, snow[i].y, snow[i].size, 0, 2*Math.PI, true);
+				ctx.fill();
+			}
+			for (i=0; i<groundSnow.length; i++) {
+				ctx.beginPath();
+				ctx.fillStyle = "white";
+				ctx.fillRect(i, canvas.height-groundSnow[i], 1, groundSnow[i]);
+			}
+		}, 0);
+	}
+
+</script>
+
